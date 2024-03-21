@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "firebase_url": "null",
+    "project_number": "505940015651",
+    "project_id": "velo3test-62008",
+    "storage_bucket": "velo3test-62008.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505940015651:android:4ac8030505af2459838f96",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.Velo3FirebaseTest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUB_Ch7DHqwr5bawXN-TiHA7nCQcgK_b4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
