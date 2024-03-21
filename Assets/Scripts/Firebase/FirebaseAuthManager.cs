@@ -12,6 +12,8 @@ using UnityEngine.SceneManagement;
 
 public class FirebaseAuthManager : MonoBehaviour
 {
+    public static FirebaseAuthManager Instance;
+
     [Header("Firebase base")]
     public DependencyStatus DependencyStatus;
     public FirebaseAuth Auth;
@@ -31,6 +33,18 @@ public class FirebaseAuthManager : MonoBehaviour
     public TMP_InputField PasswordRegisterInputField;
     public TMP_InputField ConfirmPasswordRegisterInputField;
     public Button RegisterButton;
+
+    [Space]
+    [Header("CurrentUserCredentials")]
+    private string currentUserName;
+
+    private void Awake()
+    {
+        Instance = this;
+        DontDestroyOnLoad(this);
+    }
+
+    
 
     private void Start()
     {

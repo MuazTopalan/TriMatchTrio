@@ -2898,7 +2898,7 @@ GameObject:
   - component: {fileID: 1185480969}
   - component: {fileID: 1185480968}
   m_Layer: 0
-  m_Name: UIManager
+  m_Name: LoginRegisterSceneUIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
