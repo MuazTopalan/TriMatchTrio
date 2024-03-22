@@ -11,6 +11,10 @@ using Random = UnityEngine.Random;
 public class Board : MonoBehaviour
 {
     public static Board Instance { get; private set; }
+
+    [SerializeField] private AudioClip popUpSfx;
+    [SerializeField] private AudioSource audioSource;
+
     public Row[] rows;
     public Tile[,] Tiles { get; private set; }
 
@@ -41,6 +45,8 @@ public class Board : MonoBehaviour
                 Tiles[x,y] = tile;
             }
         }
+
+        Pop(); //Baslangicta yan yana olanlar patlasin
     }
 
     private void Update()
@@ -52,7 +58,25 @@ public class Board : MonoBehaviour
     public async void Select(Tile tile)
     {
         if (!_selection. Contains(tile)) _selection.Add(tile);
+
+        if (_selection.Count > 0)      //komsu disinda secememe
+        {
+            if (System.Array.IndexOf(_selection[0].Neighbours, tile) != -1) 
+            {
+                _selection.Add(tile);
+            }
+            // else
+            // {
+            //     _selection.Clear();
+            // }
+        }
+        else
+        {
+            _selection.Add(tile);
+        }
+
         if (_selection.Count < 2) return;
+
         Debug.Log(message: $"Selected tiles at ({_selection[0].x}, {_selection[0].y}) and ({_selection[1].x}, {_selection[1].y})");
 
         await Swap(_selection[0], _selection[1]);
@@ -125,13 +149,15 @@ public class Board : MonoBehaviour
 
                 foreach (var connectedTile in connectedTiles) deflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.zero, TweenDuration));
 
+                audioSource.PlayOneShot(popUpSfx);
+
                 await deflateSequence.Play() // Sequence
                                      .AsyncWaitForCompletion(); // Task
 
-                ScoreCounter.Instance.Score += tile.Item.value * connectedTiles.Count;
+                ScoreCounter.Instance.Score += tile.Item.value * connectedTiles.Count; //bunu await ustune de tasiyabiliriz duruma gore
 
                 var inflateSequence = DOTween.Sequence();
-
+ 
                 foreach (var connectedTile in connectedTiles)
                 {
                     connectedTile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
@@ -140,6 +166,10 @@ public class Board : MonoBehaviour
                 
                 await inflateSequence.Play() // Sequence
                                      .AsyncWaitForCompletion(); // Task
+
+
+                x = 0;
+                y = 0;
             }
        
         }
