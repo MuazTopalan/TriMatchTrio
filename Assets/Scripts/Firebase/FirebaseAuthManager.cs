@@ -210,10 +210,12 @@ public class FirebaseAuthManager : MonoBehaviour
             User = loginTask.Result.User;
 
             Debug.LogFormat("{0} You Are Successfully Logged In", User.DisplayName);
+            FirebaseRealtimeDataSaver.Instance.UserID = User.UserId;
 
             if (User.IsEmailVerified)
             {
-                SceneManager.LoadScene("GameScene");
+                FirebaseRealtimeDataSaver.Instance.LoadData();
+                SceneManager.LoadScene("GameSceneYusuf");
             }
             else
             {
