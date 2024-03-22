@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Elephant
   m_EditorClassIdentifier: 
   value: 13
-  sprite: {fileID: 21300000, guid: 7a5b713300360ba4c8d2e2550a0f1079, type: 3}
+  sprite: {fileID: 21300000, guid: 2ea49e5d0642a6d4c82f9310cb82435e, type: 3}

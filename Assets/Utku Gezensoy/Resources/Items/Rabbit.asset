@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Rabbit
   m_EditorClassIdentifier: 
   value: 12
-  sprite: {fileID: 21300000, guid: eee63b59a90d0254e95ac0b6f9f6f6cb, type: 3}
+  sprite: {fileID: 21300000, guid: a494f74efaa7bbd4f90b6190611bf773, type: 3}

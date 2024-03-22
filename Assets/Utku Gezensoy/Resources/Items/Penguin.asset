@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Penguin
   m_EditorClassIdentifier: 
   value: 15
-  sprite: {fileID: 21300000, guid: ba36dc2253ca28c408787fbf02319fe1, type: 3}
+  sprite: {fileID: 21300000, guid: 03681db6a51a47d478f540c905d59757, type: 3}
