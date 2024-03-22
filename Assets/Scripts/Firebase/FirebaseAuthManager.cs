@@ -1,12 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using UnityEngine.UI;
 using System.Threading.Tasks;
 using TMPro;
-using System;
 using UnityEngine.SceneManagement;
 
 
@@ -105,7 +103,7 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         else
         {
-            UIManager.Instance.OpenRegisterPanel();
+            UIManager.Instance.OpenMainPanel();
         }
     }
 
