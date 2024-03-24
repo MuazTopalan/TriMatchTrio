@@ -17,7 +17,7 @@ public class FirebaseRealtimeDataSaver : MonoBehaviour
 
     public DataToSave dataToSave;
     public string UserID;
-    DatabaseReference databaseReference;
+    private DatabaseReference databaseReference;
 
     public bool isDataLoaded;
 

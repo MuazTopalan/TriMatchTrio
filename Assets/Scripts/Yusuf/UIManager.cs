@@ -8,11 +8,15 @@ public class UIManager : MonoBehaviour
     public GameObject MainPanel;
     public GameObject registerPanel;
     public GameObject LoginPanel;
+    public GameObject LeaderBoardsPanel;
 
     public Button RegisterPanelButton;
     public Button LoginPanelButton;
+    public Button LeaderBoardsPanelButton;
+
     public Button RegisterPanelBackButton;
     public Button LoginPanelBackButton;
+    public Button LeaderBoardsPanelBackButton;
 
     private void Awake()
     {
@@ -25,6 +29,8 @@ public class UIManager : MonoBehaviour
         LoginPanelButton.onClick.AddListener(OpenLoginPanel);
         RegisterPanelBackButton.onClick.AddListener(OpenMainPanel);
         LoginPanelBackButton.onClick.AddListener(OpenMainPanel);
+        LeaderBoardsPanelButton.onClick.AddListener(OpenLeaderBoardsPanel);
+        LeaderBoardsPanelBackButton.onClick.AddListener(OpenMainPanel);
     }
 
     private void OnDisable()
@@ -33,6 +39,8 @@ public class UIManager : MonoBehaviour
         LoginPanelButton.onClick.RemoveListener(OpenLoginPanel);
         RegisterPanelBackButton.onClick.RemoveListener(OpenMainPanel);
         LoginPanelBackButton.onClick.RemoveListener(OpenMainPanel);
+        LeaderBoardsPanelButton.onClick.RemoveListener(OpenLeaderBoardsPanel);
+        LeaderBoardsPanelBackButton.onClick.RemoveListener(OpenMainPanel);
     }
 
     public void OpenLoginPanel()
@@ -40,6 +48,7 @@ public class UIManager : MonoBehaviour
         MainPanel.SetActive(false);
         registerPanel.SetActive(false);
         LoginPanel.SetActive(true);
+        LeaderBoardsPanel.SetActive(false);
     }
 
     public void OpenRegisterPanel()
@@ -47,6 +56,7 @@ public class UIManager : MonoBehaviour
         MainPanel.SetActive(false);
         registerPanel.SetActive(true);
         LoginPanel.SetActive(false);
+        LeaderBoardsPanel.SetActive(false);
     }
 
     public void OpenMainPanel()
@@ -54,5 +64,16 @@ public class UIManager : MonoBehaviour
         MainPanel.SetActive(true);
         registerPanel.SetActive(false);
         LoginPanel.SetActive(false);
+        LeaderBoardsPanel.SetActive(false);
+    }
+
+    public void OpenLeaderBoardsPanel()
+    {
+        MainPanel.SetActive(false);
+        registerPanel.SetActive(false);
+        LoginPanel.SetActive(false);
+        LeaderBoardsPanel.SetActive(true);
+
+        FirebaseLeaderboardsManager.instance.LoadScoreboardData();
     }
 }

@@ -66,6 +66,7 @@ public class GameManagerYusuf : MonoBehaviour
 
     private void SaveData()
     {
+        FirebaseRealtimeDataSaver.Instance.dataToSave.UserName = FirebaseAuthManager.Instance.User.DisplayName;
         FirebaseRealtimeDataSaver.Instance.SaveData();
     }
 

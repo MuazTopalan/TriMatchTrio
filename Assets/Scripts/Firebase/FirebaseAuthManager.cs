@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-
 public class FirebaseAuthManager : MonoBehaviour
 {
     public static FirebaseAuthManager Instance;
