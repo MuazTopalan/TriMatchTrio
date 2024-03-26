@@ -1,6 +1,5 @@
 using Firebase.Database;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -42,7 +41,6 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
 
     private IEnumerator LoadScoreboardDataAsync()
     {
-
         Task<DataSnapshot> databaseTask = databaseReference.Child("Users").OrderByChild("HighScore").GetValueAsync();
 
         yield return new WaitUntil(predicate: () => databaseTask.IsCompleted);
@@ -64,6 +62,8 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
             }
 
             int currentDataLoadCount = 0;
+            bool isCurrentUserInTop = false;
+            string currentUserName = FirebaseRealtimeDataSaver.Instance.dataToSave.UserName;
 
             foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
             {
@@ -72,43 +72,50 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
                     string userName = childSnapshot.Child("UserName").Value.ToString();
                     string level = childSnapshot.Child("CurrentLevel").Value.ToString();
                     string highScore = childSnapshot.Child("HighScore").Value.ToString();
+                    string userPlace = (currentDataLoadCount + 1).ToString();
 
-                    GameObject leaderBoardsElementGO = Instantiate(LeaderBoardsElementObjectPrefab, LeaderBoardsContent);
-                    LeaderBoardsElement leaderBoardsElement = leaderBoardsElementGO.GetComponent<LeaderBoardsElement>();
-                    leaderBoardsElement.PlaceText.text = "#" + (currentDataLoadCount + 1);
-                    leaderBoardsElement.NameText.text = userName;
-                    leaderBoardsElement.LevelText.text = level;
-                    leaderBoardsElement.HighScoreText.text = highScore;
+                    InstantiateLeaderBoardsElement(userName, highScore, level, userPlace);
 
                     currentDataLoadCount++;
+
+                    if(currentUserName == userName) { isCurrentUserInTop = true; }
                 }
-                else
+            }
+
+            if (!isCurrentUserInTop)
+            {
+                int currentUserPlace = 0;
+                bool isCurrentUserFound = false;
+
+                foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
                 {
-                    string currentUserName = FirebaseRealtimeDataSaver.Instance.dataToSave.UserName;
-                    bool userInTop = false;
-
-                    for (int i = 0; i < MaxDataLoadCount; i++)
+                    if (!isCurrentUserFound)
                     {
-                        if (currentUserName == LeaderBoardsContent.GetChild(i).GetComponent<LeaderBoardsElement>().NameText.text)
-                        {
-                            userInTop = true;
-                        }
-                        
-                    }
+                        string userName = childSnapshot.Child("UserName").Value.ToString();
+                        currentUserPlace++;
 
-                    if (!userInTop)
-                    {
-                        int userHighScore = FirebaseRealtimeDataSaver.Instance.dataToSave.HighScore;
-
-                        GameObject leaderBoardsElementGO = Instantiate(LeaderBoardsElementObjectPrefab, LeaderBoardsContent);
-                        LeaderBoardsElement leaderBoardsElement = leaderBoardsElementGO.GetComponent<LeaderBoardsElement>();
-                        leaderBoardsElement.NameText.text = currentUserName;
-                        leaderBoardsElement.HighScoreText.text = userHighScore.ToString();
+                        if (currentUserName == userName) { isCurrentUserFound = true; }
                     }
                 }
-                
+
+                string userHighScore = FirebaseRealtimeDataSaver.Instance.dataToSave.HighScore.ToString();
+                string userLevel = FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel.ToString();
+                string userPlace = currentUserPlace.ToString();
+
+                InstantiateLeaderBoardsElement(currentUserName, userHighScore, userLevel, userPlace);
             }
         }
+    }
 
+    public GameObject InstantiateLeaderBoardsElement(string userName, string userHighScore, string userLevel, string userPlace )
+    {
+        GameObject leaderBoardsElementGO = Instantiate(LeaderBoardsElementObjectPrefab, LeaderBoardsContent);
+        LeaderBoardsElement leaderBoardsElement = leaderBoardsElementGO.GetComponent<LeaderBoardsElement>();
+        leaderBoardsElement.NameText.text = userName;
+        leaderBoardsElement.HighScoreText.text = userHighScore;
+        leaderBoardsElement.LevelText.text = userLevel;
+        leaderBoardsElement.PlaceText.text = "#" + userPlace;
+
+        return leaderBoardsElementGO;
     }
 }
