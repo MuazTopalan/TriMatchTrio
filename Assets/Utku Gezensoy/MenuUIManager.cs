@@ -28,6 +28,11 @@ public class MenuUIManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    public void OnLeaderBoardButtonClicked()
+    {
+        SceneManager.LoadScene(2);
+    }
+
     public void OnExitButtonClicked()
     {
         Application.Quit();
