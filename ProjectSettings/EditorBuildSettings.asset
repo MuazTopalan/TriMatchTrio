@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Utku Gezensoy/LeaderBoardScene.unity
     guid: 30bcd31846042864f89a9cc32c33fe3e
+  - enabled: 1
+    path: Assets/Utku Gezensoy/LevelSelectScene.unity
+    guid: 337aefc9351b15a4ab06c20bb80a90a3
   m_configObjects: {}

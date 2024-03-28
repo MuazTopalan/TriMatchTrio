@@ -33,6 +33,11 @@ public class MenuUIManager : MonoBehaviour
         SceneManager.LoadScene(3);
     }
 
+    public void OnLevelButtonClicked()
+    {
+        SceneManager.LoadScene(4);
+    }
+
     public void OnExitButtonClicked()
     {
         Application.Quit();
