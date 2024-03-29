@@ -10,65 +10,84 @@ using Random = UnityEngine.Random;
 
 public class Board : MonoBehaviour
 {
+    // Singleton instance of the board
     public static Board Instance { get; private set; }
 
+    // Audio clip for popping sound
     [SerializeField] private AudioClip popUpSfx;
     [SerializeField] private AudioSource audioSource;
 
+    // Rows of tiles on the board
     public Row[] rows;
     public Tile[,] Tiles { get; private set; }
 
-    public int Width => Tiles.GetLength( dimension: 0);
+    // Width and height of the board
+    public int Width => Tiles.GetLength(dimension: 0);
     public int Height => Tiles.GetLength(dimension: 1);
 
+    // List to store selected tiles
     private readonly List<Tile> _selection = new List<Tile>();
 
+    // Duration of tween animations
     private const float TweenDuration = 0.25f;
 
-
+    // Called when the board object is initialized
     private void Awake() => Instance = this;
 
-    private void Start()
+    // Called when the game starts
+    private async void Start()
     {
-        Tiles = new Tile[rows.Max(selector:row => row.tiles.Length), rows.Length];
+        await InitializeBoardAsync(); // Await the asynchronous board initialization
+    }
 
+    // Method to initialize the board asynchronously
+    private async Task InitializeBoardAsync()
+    {
+        Tiles = new Tile[rows.Max(row => row.tiles.Length), rows.Length];
+
+        // Populate the board with tiles
         for (var y = 0; y < Height; y++)
         {
             for (var x = 0; x < Width; x++)
             {
-                var tile = rows[y].tiles[x]; 
+                var tile = rows[y].tiles[x];
 
                 tile.x = x;
                 tile.y = y;
 
+                // Randomly select an item from the ItemDatabase
                 tile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
-                Tiles[x,y] = tile;
+
+                Tiles[x, y] = tile;
             }
         }
 
-        Pop(); //Baslangicta yan yana olanlar patlasin
+        await Pop(); // Await the popping process // Initial popping of connected tiles
     }
 
+    // Update is called once per frame
     private void Update()
     {
         if (!Input.GetKeyDown(KeyCode.A)) return;
-        foreach (var connectedTile in Tiles[0, 0].GetConnectedTiles()) connectedTile.icon.transform.DOScale(1.25f, TweenDuration).Play();
+
+        // Debugging: Scale up the first connected tile on the board
+        foreach (var connectedTile in Tiles[0, 0].GetConnectedTiles())
+        {
+            connectedTile.icon.transform.DOScale(1.25f, TweenDuration).Play();
+        }
     }
 
+    // Method to handle tile selection
     public async void Select(Tile tile)
     {
-        if (!_selection. Contains(tile)) _selection.Add(tile);
+        if (!_selection.Contains(tile)) _selection.Add(tile);
 
-        if (_selection.Count > 0)      //komsu disinda secememe
+        if (_selection.Count > 0)
         {
-            if (System.Array.IndexOf(_selection[0].Neighbours, tile) != -1) 
+            if (System.Array.IndexOf(_selection[0].Neighbours, tile) != -1)
             {
                 _selection.Add(tile);
             }
-            // else
-            // {
-            //     _selection.Clear();
-            // }
         }
         else
         {
@@ -77,13 +96,20 @@ public class Board : MonoBehaviour
 
         if (_selection.Count < 2) return;
 
-        Debug.Log(message: $"Selected tiles at ({_selection[0].x}, {_selection[0].y}) and ({_selection[1].x}, {_selection[1].y})");
+        // Check if both tiles are movable before swapping
+        if (_selection[0].Item.isSandblock || _selection[1].Item.isSandblock)
+        {
+            _selection.Clear(); // Clear selection if either tile is a sandblock
+            return;
+        }
+
+        Debug.Log($"Selected tiles at ({_selection[0].x}, {_selection[0].y}) and ({_selection[1].x}, {_selection[1].y})");
 
         await Swap(_selection[0], _selection[1]);
 
-        if(CanPop())
+        if (CanPop())
         {
-            Pop();
+            await Pop(); // Await the popping process
         }
         else
         {
@@ -93,7 +119,8 @@ public class Board : MonoBehaviour
         _selection.Clear();
     }
 
-   public async Task Swap(Tile tile1, Tile tile2)
+    // Method to swap two tiles
+    public async Task Swap(Tile tile1, Tile tile2)
     {
         Image icon1 = tile1.icon;
         Image icon2 = tile2.icon;
@@ -106,8 +133,7 @@ public class Board : MonoBehaviour
         sequence.Join(icon1Transform.DOMove(icon2Transform.position, TweenDuration));
         sequence.Join(icon2Transform.DOMove(icon1Transform.position, TweenDuration));
 
-        await sequence.Play()
-                      .AsyncWaitForCompletion();
+        await sequence.Play().AsyncWaitForCompletion();
 
         icon1Transform.SetParent(tile2.transform);
         icon2Transform.SetParent(tile1.transform);
@@ -120,20 +146,24 @@ public class Board : MonoBehaviour
         tile2.Item = tile1Item;
     }
 
+    // Method to check if popping is possible
     private bool CanPop()
     {
         for (var y = 0; y < Height; y++)
         {
             for (var x = 0; x < Width; x++)
             {
-                if (Tiles[x, y].GetConnectedTiles().Skip(1).Count() >= 2) 
+                if (Tiles[x, y].GetConnectedTiles().Skip(1).Count() >= 2)
+                {
                     return true;
+                }
             }
         }
-        
+
         return false;
     }
 
+    // Method to pop connected tiles
     private async Task Pop()
     {
         for (var y = 0; y < Height; y++)
@@ -147,34 +177,27 @@ public class Board : MonoBehaviour
 
                 var deflateSequence = DOTween.Sequence();
 
-                foreach (var connectedTile in connectedTiles) deflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.zero, TweenDuration));
+                foreach (var connectedTile in connectedTiles)
+                {
+                    deflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.zero, TweenDuration));
+                }
 
                 audioSource.PlayOneShot(popUpSfx);
 
-                await deflateSequence.Play() // Sequence
-                                     .AsyncWaitForCompletion(); // Task
+                await deflateSequence.Play().AsyncWaitForCompletion();
 
-                ScoreCounter.Instance.Score += tile.Item.value * connectedTiles.Count; //bunu await ustune de tasiyabiliriz duruma gore
+                ScoreCounter.Instance.Score += tile.Item.value * connectedTiles.Count;
 
                 var inflateSequence = DOTween.Sequence();
- 
+
                 foreach (var connectedTile in connectedTiles)
                 {
                     connectedTile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
                     inflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.one, TweenDuration));
                 }
-                
-                await inflateSequence.Play() // Sequence
-                                     .AsyncWaitForCompletion(); // Task
 
-
-                x = 0;
-                y = 0;
+                await inflateSequence.Play().AsyncWaitForCompletion();
             }
-       
         }
-        
     }
-
 }
- 
