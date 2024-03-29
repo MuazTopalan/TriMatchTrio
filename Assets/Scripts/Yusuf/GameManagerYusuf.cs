@@ -6,12 +6,19 @@ using UnityEngine.UI;
 
 public class GameManagerYusuf : MonoBehaviour
 {
+    public static GameManagerYusuf Instance;
+
     public TextMeshProUGUI CurrentLevelText;
     public TextMeshProUGUI CurrentScoreText;
     public TextMeshProUGUI HighScoreText;
+    public TextMeshProUGUI MovesInCurrentLevelText;
+    public TextMeshProUGUI TimeSpendInCurrentLevel;
 
     public Button IncreaseLevelButton;
     public Button IncreaseScoreButton;
+    public Button MakeMoveButton;
+    public Button FinishLevelButton;
+    public Button QuitLevelButton;
 
     private const string c_currentLevel = "Current Level: ";
     private const string c_currentScore = "Current Score: ";
@@ -21,21 +28,42 @@ public class GameManagerYusuf : MonoBehaviour
     public int CurrentScore;
     public int HighScore;
 
+    public int MovesInCurrentLevel;
+    public float spendSecondsCurrentLevel;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void OnEnable()
     {
         IncreaseLevelButton.onClick.AddListener(IncreaseLevel);
         IncreaseScoreButton.onClick.AddListener(IncreaseScore);
+        MakeMoveButton.onClick.AddListener(MakeMove);
+        FinishLevelButton.onClick.AddListener(FinishLevel);
+        QuitLevelButton.onClick.AddListener(QuitLevel);
     }
 
     private void OnDisable()
     {
         IncreaseLevelButton.onClick.RemoveListener(IncreaseLevel);
         IncreaseScoreButton.onClick.RemoveListener(IncreaseScore);
+        MakeMoveButton.onClick.RemoveListener(MakeMove);
+        QuitLevelButton.onClick.RemoveListener(QuitLevel);
     }
 
     private void Start()
     {
         LoadData();
+    }
+
+    private void Update()
+    {
+        spendSecondsCurrentLevel += Time.deltaTime;
+        TimeSpendInCurrentLevel.text = spendSecondsCurrentLevel.ToString("F2");
+
+
     }
 
     public void IncreaseLevel()
@@ -62,6 +90,30 @@ public class GameManagerYusuf : MonoBehaviour
             FirebaseRealtimeDataSaver.Instance.dataToSave.HighScore = HighScore;
             SaveData();
         }
+    }
+
+    public void MakeMove()
+    {
+        MovesInCurrentLevel++;
+        MovesInCurrentLevelText.text = "Moves In Current Level: " + MovesInCurrentLevel.ToString();
+    }
+
+    public void StartLevel(int level)
+    {
+        CurrentLevel = level;
+        CurrentLevelText.text = CurrentLevel.ToString();
+        spendSecondsCurrentLevel = 0;
+        MovesInCurrentLevel = 0;
+    }
+
+    public void FinishLevel()
+    {
+        FirebaseAnalyticsManager.Instance.SendLevelCompletedEvent(CurrentLevel, MovesInCurrentLevel, spendSecondsCurrentLevel);
+    }
+
+    public void QuitLevel()
+    {
+        FirebaseAnalyticsManager.Instance.SendLevelQuitedEvent(CurrentLevel, MovesInCurrentLevel, spendSecondsCurrentLevel);
     }
 
     private void SaveData()
