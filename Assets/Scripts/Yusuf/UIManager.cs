@@ -61,9 +61,9 @@ public class UIManager : MonoBehaviour
 
     public void OpenMainPanel()
     {
-        MainPanel.SetActive(true);
+        //MainPanel.SetActive(true);
         registerPanel.SetActive(false);
-        LoginPanel.SetActive(false);
+        LoginPanel.SetActive(true);
         LeaderBoardsPanel.SetActive(false);
     }
 
