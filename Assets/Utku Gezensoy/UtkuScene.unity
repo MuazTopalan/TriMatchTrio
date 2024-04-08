@@ -415,6 +415,8 @@ MonoBehaviour:
   - {fileID: 1570510077}
   - {fileID: 1799303762}
   - {fileID: 791405374}
+  levelTimer: 30
+  scoreThreshold: 500
 --- !u!82 &183947690
 AudioSource:
   m_ObjectHideFlags: 0
