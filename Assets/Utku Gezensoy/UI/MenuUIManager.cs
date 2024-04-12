@@ -25,7 +25,7 @@ public class MenuUIManager : MonoBehaviour
 
     public void OnStartButtonClicked()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Level1"); 
     }
 
     public void OnLeaderBoardButtonClicked()

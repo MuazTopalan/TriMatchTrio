@@ -22,7 +22,7 @@ public class Tile : MonoBehaviour
         {
             if (_item == value) return;
             _item = value;
-            icon.sprite = _item.sprite;
+            icon.sprite = _item?.sprite; // NULL CHECK ADDED HERE
         }
     }
 
@@ -50,6 +50,15 @@ public class Tile : MonoBehaviour
     {
         // Add listener to the button click event
         button.onClick.AddListener(() => Board.Instance.Select(tile: this));
+
+        int sandblockEnabled = PlayerPrefs.GetInt("SandblockEnabled", 1); // Sandblock'un etkin olup olmadığını kontrol edin, varsayılan olarak etkin
+
+        // Check if the item is a sandblock and if sandblock is enabled for the current level
+        if (Item != null && Item.isSandblock && sandblockEnabled == 0)
+        {
+            // If the item is a sandblock but sandblock is not enabled for the current level, set it to null
+            Item = null;
+        }
     }
 
     // Method to get connected tiles based on the same item
