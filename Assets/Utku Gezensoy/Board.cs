@@ -31,6 +31,13 @@ public class Board : MonoBehaviour
     // Duration of tween animations
     private const float TweenDuration = 0.25f;
 
+    // Timer for the level
+    [SerializeField] private float levelTimer;
+    private bool isGameRunning = true;
+
+    // Score threshold for the level
+    [SerializeField] private int scoreThreshold;
+
     // Called when the board object is initialized
     private void Awake() => Instance = this;
 
@@ -38,6 +45,7 @@ public class Board : MonoBehaviour
     private async void Start()
     {
         await InitializeBoardAsync(); // Await the asynchronous board initialization
+        StartCoroutine(UpdateTimer());
     }
 
     // Method to initialize the board asynchronously
@@ -68,6 +76,8 @@ public class Board : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (!isGameRunning) return; // Check if the game is running or not depending on the timer or other factors
+
         if (!Input.GetKeyDown(KeyCode.A)) return;
 
         // Debugging: Scale up the first connected tile on the board
@@ -80,7 +90,10 @@ public class Board : MonoBehaviour
     // Method to handle tile selection
     public async void Select(Tile tile)
     {
-        if (!_selection.Contains(tile)) _selection.Add(tile);
+        if (!isGameRunning) return; // Check if the game is running or has stopped, if stopped we cannot interract with the board
+
+        if (!_selection.Contains(tile))
+            _selection.Add(tile);
 
         if (_selection.Count > 0)
         {
@@ -94,7 +107,8 @@ public class Board : MonoBehaviour
             _selection.Add(tile);
         }
 
-        if (_selection.Count < 2) return;
+        if (_selection.Count < 2)
+            return;
 
         // Check if both tiles are movable before swapping
         if (_selection[0].Item.isSandblock || _selection[1].Item.isSandblock)
@@ -198,6 +212,43 @@ public class Board : MonoBehaviour
 
                 await inflateSequence.Play().AsyncWaitForCompletion();
             }
+        }
+    }
+
+    // Method to update the timer
+    private IEnumerator UpdateTimer()
+    {
+        while (levelTimer > 0)
+        {
+            // Debug the timer's current value every tick
+            Debug.Log($"Timer: {(int)levelTimer}");
+
+            // Decrease the timer value
+            levelTimer -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        // When the timer hits zero
+        isGameRunning = false;
+
+        // Disable tile selection and make objects non-interactable
+        foreach (var tile in Tiles)
+        {
+            tile.gameObject.GetComponent<Button>().interactable = false;
+        }
+
+        // Debug log the success or fail output
+        // Also will be used to determine scene loading based on the outcome, fail or success
+        if (ScoreCounter.Instance.Score >= scoreThreshold)
+        {
+            Debug.Log("Success! Level completed!");
+            // Trigger success UI canvas
+        }
+        else
+        {
+            Debug.Log("Failed! Score is below the threshold.");
+            // Trigger fail UI canvas
         }
     }
 }
