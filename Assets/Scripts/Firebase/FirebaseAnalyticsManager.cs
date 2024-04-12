@@ -54,4 +54,15 @@ public class FirebaseAnalyticsManager : MonoBehaviour
         FirebaseAnalytics.LogEvent("level_failed", parameters);
     }
 
+    public void SendLevelSkippedEvent(int level, int totalMoves, float spendTimeInSeconds)
+    {
+        Parameter levelParameter = new("level_parameter", level);
+        Parameter totalMovesParameter = new("total_moves_parameter", totalMoves);
+        Parameter spendTimeInSecondsParameter = new("spend_time_in_seconds", spendTimeInSeconds);
+
+        Parameter[] parameters = { levelParameter, totalMovesParameter, spendTimeInSecondsParameter };
+
+        FirebaseAnalytics.LogEvent("level_skipped", parameters);
+    }
+
 }
