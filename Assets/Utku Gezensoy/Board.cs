@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using DG.Tweening;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
+using System;
 
 public class Board : MonoBehaviour
 {
@@ -247,13 +249,46 @@ public class Board : MonoBehaviour
         if (ScoreCounter.Instance.Score >= scoreThreshold)
         {
             Debug.Log("Success! Level completed!");
-            FirebaseAnalyticsManager.Instance.SendLevelCompletedEvent(0, swapsThisLevel, levelTimer);
+
+            string levelName = SceneManager.GetActiveScene().name;
+            string b = string.Empty;
+            int level = 0;
+
+            for (int i = 0; i < levelName.Length; i++)
+            {
+                if (char.IsDigit(levelName[i]))
+                    b += levelName[i];
+            }
+
+            if (b.Length > 0)
+                level = int.Parse(b);
+
+            Debug.Log(level);
+
+            FirebaseAnalyticsManager.Instance.SendLevelCompletedEvent(level, swapsThisLevel, levelTimer);
+
             // Trigger success UI canvas
         }
         else
         {
             Debug.Log("Failed! Score is below the threshold.");
-            FirebaseAnalyticsManager.Instance.SendLevelFailedEvent(0, swapsThisLevel, levelTimer);
+
+            string levelName = SceneManager.GetActiveScene().name;
+            string b = string.Empty;
+            int level = 0;
+
+            for (int i = 0; i < levelName.Length; i++)
+            {
+                if (char.IsDigit(levelName[i]))
+                    b += levelName[i];
+            }
+
+            if (b.Length > 0)
+                level = int.Parse(b);
+
+            Debug.Log(level);
+
+            FirebaseAnalyticsManager.Instance.SendLevelFailedEvent(level, swapsThisLevel, levelTimer);
 
             // Trigger fail UI canvas
         }
