@@ -74,6 +74,6 @@ public class UIManager : MonoBehaviour
         LoginPanel.SetActive(false);
         LeaderBoardsPanel.SetActive(true);
 
-        FirebaseLeaderboardsManager.instance.LoadScoreboardData();
+        FirebaseLeaderboardsManager.Instance.LoadScoreboardData();
     }
 }

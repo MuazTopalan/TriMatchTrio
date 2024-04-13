@@ -2,12 +2,13 @@ using Firebase.Database;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class FirebaseLeaderboardsManager : MonoBehaviour
 {
-    public static FirebaseLeaderboardsManager instance;
+    public static FirebaseLeaderboardsManager Instance;
     private DatabaseReference databaseReference;
 
     public Transform LeaderBoardsContent;
@@ -17,11 +18,25 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
 
     public Button RefreshButton;
 
+    public TextMeshProUGUI PlayerNameText;
+
     private void Awake()
     {
-        instance = this;
-        DontDestroyOnLoad(gameObject);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+    }
+
+    private void Start()
+    {
+        LoadScoreboardData();
     }
 
     private void OnEnable()
@@ -65,6 +80,9 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
             bool isCurrentUserInTop = false;
             string currentUserName = FirebaseRealtimeDataSaver.Instance.dataToSave.UserName;
 
+            PlayerNameText.text = currentUserName;
+
+
             foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
             {
                 if (currentDataLoadCount < MaxDataLoadCount)
@@ -103,8 +121,12 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
                 string userPlace = currentUserPlace.ToString();
 
                 InstantiateLeaderBoardsElement(currentUserName, userHighScore, userLevel, userPlace);
+
             }
         }
+
+
+
     }
 
     public GameObject InstantiateLeaderBoardsElement(string userName, string userHighScore, string userLevel, string userPlace )

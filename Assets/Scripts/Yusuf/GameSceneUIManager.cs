@@ -34,7 +34,7 @@ public class GameSceneUIManager : MonoBehaviour
     public void OpenLeaderBoardsPanel()
     {
         LeaderBoardsPanel.SetActive(true);
-        FirebaseLeaderboardsManager.instance.LoadScoreboardData();
+        FirebaseLeaderboardsManager.Instance.LoadScoreboardData();
     }
 
     public void CloseLeaderBoardsPanel()
@@ -44,6 +44,6 @@ public class GameSceneUIManager : MonoBehaviour
     
     public void RefreshLeaderBoards()
     {
-        FirebaseLeaderboardsManager.instance.LoadScoreboardData();
+        FirebaseLeaderboardsManager.Instance.LoadScoreboardData();
     }
 }

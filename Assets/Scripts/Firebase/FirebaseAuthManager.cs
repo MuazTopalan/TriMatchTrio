@@ -214,7 +214,7 @@ public class FirebaseAuthManager : MonoBehaviour
             if (User.IsEmailVerified)
             {
                 FirebaseRealtimeDataSaver.Instance.LoadData();
-                SceneManager.LoadScene("GameSceneYusuf");
+                SceneManager.LoadScene("MenuScene");
             }
             else
             {
@@ -222,6 +222,10 @@ public class FirebaseAuthManager : MonoBehaviour
 
             }
         }
+
+        FirebaseRealtimeDataSaver.Instance.dataToSave.UserName = User.DisplayName;
+        FirebaseRealtimeDataSaver.Instance.SaveData();
+
     }
 
     public void Register()
