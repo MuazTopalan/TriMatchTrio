@@ -45,19 +45,21 @@ public class Tile : MonoBehaviour
         Bottom,
     };
 
-    // Called when the tile object is initialized
     private void Start()
     {
-        // Add listener to the button click event
+         // Add listener to the button click event
         button.onClick.AddListener(() => Board.Instance.Select(tile: this));
 
-        int sandblockEnabled = PlayerPrefs.GetInt("SandblockEnabled", 1); // Sandblock'un etkin olup olmadığını kontrol edin, varsayılan olarak etkin
+        int sandblockEnabled = LevelManager.SandblockEnabled; // LevelManager'dan sandblockEnabled özelliğini al
 
         // Check if the item is a sandblock and if sandblock is enabled for the current level
-        if (Item != null && Item.isSandblock && sandblockEnabled == 0)
+        if (Item != null && Item.isSandblock)
         {
-            // If the item is a sandblock but sandblock is not enabled for the current level, set it to null
-            Item = null;
+            if (sandblockEnabled == 0)
+            {
+                // If the item is a sandblock but sandblock is not enabled for the current level, set it to null
+                Item = null;
+            }
         }
     }
 

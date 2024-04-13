@@ -15,4 +15,4 @@ MonoBehaviour:
   value: 5
   sprite: {fileID: 21300000, guid: b776daf3def9e5847ad20387a20a7717, type: 3}
   isSandblock: 1
-  levelRequirement: 1
+  levelRequirement: 3

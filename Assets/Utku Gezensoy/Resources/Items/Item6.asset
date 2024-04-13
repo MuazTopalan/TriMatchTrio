@@ -10,8 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77f3625e11eff7e41b31a41ecddf36ee, type: 3}
-  m_Name: Panda
+  m_Name: Item6
   m_EditorClassIdentifier: 
   value: 15
-  sprite: {fileID: 21300000, guid: 1d10a523354168c47aeb840de0d8a76d, type: 3}
-  isSandblock: 0
+  sprite: {fileID: 21300000, guid: 03681db6a51a47d478f540c905d59757, type: 3}
