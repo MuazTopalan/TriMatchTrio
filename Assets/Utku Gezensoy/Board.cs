@@ -38,6 +38,8 @@ public class Board : MonoBehaviour
     // Score threshold for the level
     [SerializeField] private int scoreThreshold;
 
+    [SerializeField] private int swapsThisLevel;
+
     // Called when the board object is initialized
     private void Awake() => Instance = this;
 
@@ -158,6 +160,8 @@ public class Board : MonoBehaviour
         var tile1Item = tile1.Item;
         tile1.Item = tile2.Item;
         tile2.Item = tile1Item;
+
+        swapsThisLevel++;
     }
 
     // Method to check if popping is possible
@@ -243,11 +247,14 @@ public class Board : MonoBehaviour
         if (ScoreCounter.Instance.Score >= scoreThreshold)
         {
             Debug.Log("Success! Level completed!");
+            FirebaseAnalyticsManager.Instance.SendLevelCompletedEvent(0, swapsThisLevel, levelTimer);
             // Trigger success UI canvas
         }
         else
         {
             Debug.Log("Failed! Score is below the threshold.");
+            FirebaseAnalyticsManager.Instance.SendLevelFailedEvent(0, swapsThisLevel, levelTimer);
+
             // Trigger fail UI canvas
         }
     }
