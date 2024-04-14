@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -38,9 +39,24 @@ public class MenuUIManager : MonoBehaviour
         SceneManager.LoadScene(4);
     }
 
+    public void OnContinueButtonClicked()
+    {
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        SceneManager.LoadScene(nextSceneIndex);
+    }
+
+    public void OnRetryButtonClicked()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
+    }
+
     public void OnExitButtonClicked()
     {
         Application.Quit();
+
+        // Exit play mode
+        EditorApplication.ExitPlaymode();
     }
 
     public void OnSoundButtonClicked()

@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // Add this namespace for TextMeshPro
 using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
-using UnityEngine.SceneManagement;
-using System;
 
 public class Board : MonoBehaviour
 {
@@ -40,7 +39,12 @@ public class Board : MonoBehaviour
     // Score threshold for the level
     [SerializeField] private int scoreThreshold;
 
-    [SerializeField] private int swapsThisLevel;
+    // Reference to the TextMeshPro object for displaying the timer
+    [SerializeField] private TextMeshProUGUI timerText;
+
+    // Serialized fields for WIN and LOSE panels
+    [SerializeField] private GameObject winPanel;
+    [SerializeField] private GameObject losePanel;
 
     // Called when the board object is initialized
     private void Awake() => Instance = this;
@@ -68,14 +72,7 @@ public class Board : MonoBehaviour
                 tile.y = y;
 
                 // Randomly select an item from the ItemDatabase
-                if (SceneManager.GetActiveScene().name == "Level1" || SceneManager.GetActiveScene().name == "Level2")
-                {
-                    tile.Item = ItemDatabase.Items.Where(item => !item.isSandblock).ElementAt(Random.Range(0, ItemDatabase.Items.Length - 1));
-                }
-                else
-                {
-                    tile.Item = ItemDatabase.Items.ElementAt(Random.Range(0, ItemDatabase.Items.Length));
-                }
+                tile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
 
                 Tiles[x, y] = tile;
             }
@@ -87,7 +84,7 @@ public class Board : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (!isGameRunning) return; // Check if the game is running or not depending on the timer or other factors
+        if (!isGameRunning) return; // Check if the game is running
 
         if (!Input.GetKeyDown(KeyCode.A)) return;
 
@@ -101,7 +98,7 @@ public class Board : MonoBehaviour
     // Method to handle tile selection
     public async void Select(Tile tile)
     {
-        if (!isGameRunning) return; // Check if the game is running or has stopped, if stopped we cannot interract with the board
+        if (!isGameRunning) return; // Check if the game is running
 
         if (!_selection.Contains(tile))
             _selection.Add(tile);
@@ -169,8 +166,6 @@ public class Board : MonoBehaviour
         var tile1Item = tile1.Item;
         tile1.Item = tile2.Item;
         tile2.Item = tile1Item;
-
-        swapsThisLevel++;
     }
 
     // Method to check if popping is possible
@@ -219,19 +214,8 @@ public class Board : MonoBehaviour
 
                 foreach (var connectedTile in connectedTiles)
                 {
-                    if (SceneManager.GetActiveScene().name == "Level1" || SceneManager.GetActiveScene().name == "Level2")
-                    {
-                        if (!connectedTile.Item.isSandblock)
-                        {
-                            connectedTile.Item = ItemDatabase.Items.Where(item => !item.isSandblock).ElementAt(Random.Range(0, ItemDatabase.Items.Length - 1));
-                            inflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.one, TweenDuration));
-                        }
-                    }
-                    else
-                    {
-                        connectedTile.Item = ItemDatabase.Items.ElementAt(Random.Range(0, ItemDatabase.Items.Length));
-                        inflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.one, TweenDuration));
-                    }
+                    connectedTile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
+                    inflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.one, TweenDuration));
                 }
 
                 await inflateSequence.Play().AsyncWaitForCompletion();
@@ -244,8 +228,11 @@ public class Board : MonoBehaviour
     {
         while (levelTimer > 0)
         {
-            // Debug the timer's current value every tick
-            Debug.Log($"Timer: {(int)levelTimer}");
+            // Update the timer text
+            if (timerText != null)
+            {
+                timerText.text = $"Time: {(int)levelTimer}";
+            }
 
             // Decrease the timer value
             levelTimer -= Time.deltaTime;
@@ -256,59 +243,28 @@ public class Board : MonoBehaviour
         // When the timer hits zero
         isGameRunning = false;
 
-        // Disable tile selection and make objects non-interactable
-        foreach (var tile in Tiles)
-        {
-            tile.gameObject.GetComponent<Button>().interactable = false;
-        }
-
-        // Debug log the success or fail output
-        // Also will be used to determine scene loading based on the outcome, fail or success
+        // Check if the score is above the threshold to determine which panel to activate
         if (ScoreCounter.Instance.Score >= scoreThreshold)
         {
-            Debug.Log("Success! Level completed!");
-
-            string levelName = SceneManager.GetActiveScene().name;
-            string b = string.Empty;
-            int level = 0;
-
-            for (int i = 0; i < levelName.Length; i++)
+            if (winPanel != null)
             {
-                if (char.IsDigit(levelName[i]))
-                    b += levelName[i];
+                winPanel.SetActive(true);
             }
-
-            if (b.Length > 0)
-                level = int.Parse(b);
-
-            Debug.Log(level);
-
-            FirebaseAnalyticsManager.Instance.SendLevelCompletedEvent(level, swapsThisLevel, levelTimer);
-
-            // Trigger success UI canvas
+            else
+            {
+                Debug.LogError("Win Panel is not assigned!");
+            }
         }
         else
         {
-            Debug.Log("Failed! Score is below the threshold.");
-
-            string levelName = SceneManager.GetActiveScene().name;
-            string b = string.Empty;
-            int level = 0;
-
-            for (int i = 0; i < levelName.Length; i++)
+            if (losePanel != null)
             {
-                if (char.IsDigit(levelName[i]))
-                    b += levelName[i];
+                losePanel.SetActive(true);
             }
-
-            if (b.Length > 0)
-                level = int.Parse(b);
-
-            Debug.Log(level);
-
-            FirebaseAnalyticsManager.Instance.SendLevelFailedEvent(level, swapsThisLevel, levelTimer);
-
-            // Trigger fail UI canvas
+            else
+            {
+                Debug.LogError("Lose Panel is not assigned!");
+            }
         }
     }
 }
