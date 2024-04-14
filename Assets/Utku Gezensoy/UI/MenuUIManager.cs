@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,9 +20,13 @@ public class MenuUIManager : MonoBehaviour
 
     private SoundManager _soundManager;
 
+    public TextMeshProUGUI PlayerNameText;
+
     private void Start()
     {
         _soundManager = SoundManager.Instance;
+
+        PlayerNameText.text = FirebaseAuthManager.Instance.User.DisplayName;
     }
 
     public void OnStartButtonClicked()
@@ -43,6 +48,9 @@ public class MenuUIManager : MonoBehaviour
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
         SceneManager.LoadScene(nextSceneIndex);
+
+        FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel = FirebaseRealtimeDataSaver.Instance.GetLevelNumberFromCurrentSceneName() + 1;
+        FirebaseRealtimeDataSaver.Instance.SaveData();
     }
 
     public void OnRetryButtonClicked()

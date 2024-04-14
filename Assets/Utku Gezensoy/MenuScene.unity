@@ -2031,6 +2031,7 @@ MonoBehaviour:
   DevPanelCloseSprite: {fileID: -465179252, guid: a5e645d0b2507ac42807ef8e886f7d45, type: 3}
   DevButtonImage: {fileID: 1305485256}
   DevPanel: {fileID: 45802903}
+  PlayerNameText: {fileID: 1666823897}
 --- !u!4 &1125767255
 Transform:
   m_ObjectHideFlags: 0

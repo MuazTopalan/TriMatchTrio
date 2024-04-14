@@ -92,11 +92,15 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
                     string highScore = childSnapshot.Child("HighScore").Value.ToString();
                     string userPlace = (currentDataLoadCount + 1).ToString();
 
-                    InstantiateLeaderBoardsElement(userName, highScore, level, userPlace);
+                    GameObject GO = InstantiateLeaderBoardsElement(userName, highScore, level, userPlace);
 
                     currentDataLoadCount++;
 
-                    if(currentUserName == userName) { isCurrentUserInTop = true; }
+                    if(currentUserName == userName)
+                    { 
+                        isCurrentUserInTop = true;
+                        GO.GetComponent<Image>().color = Color.yellow;
+                    }
                 }
             }
 
@@ -120,7 +124,8 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
                 string userLevel = FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel.ToString();
                 string userPlace = currentUserPlace.ToString();
 
-                InstantiateLeaderBoardsElement(currentUserName, userHighScore, userLevel, userPlace);
+                GameObject GO = InstantiateLeaderBoardsElement(currentUserName, userHighScore, userLevel, userPlace);
+                GO.GetComponent<Image>().color = Color.yellow;
 
             }
         }
