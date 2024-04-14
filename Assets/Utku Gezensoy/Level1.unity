@@ -2855,6 +2855,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WINPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 2729126593504137621, guid: 8f6ae50430d1c904599df1a3cfb9527a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3027057029305459118, guid: 8f6ae50430d1c904599df1a3cfb9527a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2939,6 +2943,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 665041808}
+    - target: {fileID: 7254250419616833213, guid: 8f6ae50430d1c904599df1a3cfb9527a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
