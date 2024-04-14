@@ -2,6 +2,7 @@ using Firebase.Database;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class DataToSave
@@ -56,5 +57,23 @@ public class FirebaseRealtimeDataSaver : MonoBehaviour
         {
 
         }
+    }
+
+    public int GetLevelNumberFromCurrentSceneName()
+    {
+        string SceneName = SceneManager.GetActiveScene().name;
+        string emptyString = string.Empty;
+        int LevelNumber = 0;
+
+        for (int i = 0; i < SceneName.Length; i++)
+        {
+            if (char.IsDigit(SceneName[i]))
+                emptyString += SceneName[i];
+        }
+
+        if (emptyString.Length > 0)
+            LevelNumber = int.Parse(emptyString);
+
+        return LevelNumber;
     }
 }

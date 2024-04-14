@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
 
-public class PlayLevelButton : MonoBehaviour
-{
-    public int Level;
+//public class PlayLevelButton : MonoBehaviour
+//{
+//    public int Level;
 
-    public void SelectLevel()
-    {
-        GameManagerYusuf.Instance.StartLevel(Level);
-    }
-}
+//    public void SelectLevel()
+//    {
+//        //GameManagerYusuf.Instance.StartLevel(Level);
+//    }
+//}

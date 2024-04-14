@@ -64,7 +64,7 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("wayyk");
+            Debug.LogError("CheckAndFixDependenciesAsyncError");
         }
     }
 
@@ -224,7 +224,7 @@ public class FirebaseAuthManager : MonoBehaviour
         }
 
         FirebaseRealtimeDataSaver.Instance.dataToSave.UserName = User.DisplayName;
-        FirebaseRealtimeDataSaver.Instance.SaveData();
+        //FirebaseRealtimeDataSaver.Instance.SaveData();
 
     }
 
