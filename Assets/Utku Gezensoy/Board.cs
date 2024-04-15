@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DG.Tweening;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 public class Board : MonoBehaviour
 {
@@ -72,7 +73,14 @@ public class Board : MonoBehaviour
                 tile.y = y;
 
                 // Randomly select an item from the ItemDatabase
-                tile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
+                if (SceneManager.GetActiveScene().name == "Level1" || SceneManager.GetActiveScene().name == "Level2")
+                {
+                    tile.Item = ItemDatabase.Items.Where(item => !item.isSandblock).ElementAt(Random.Range(0, ItemDatabase.Items.Length - 1));
+                }
+                else
+                {
+                    tile.Item = ItemDatabase.Items.ElementAt(Random.Range(0, ItemDatabase.Items.Length));
+                }
 
                 Tiles[x, y] = tile;
             }
@@ -214,8 +222,19 @@ public class Board : MonoBehaviour
 
                 foreach (var connectedTile in connectedTiles)
                 {
-                    connectedTile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
-                    inflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.one, TweenDuration));
+                    if (SceneManager.GetActiveScene().name == "Level1" || SceneManager.GetActiveScene().name == "Level2")
+                    {
+                        if (!connectedTile.Item.isSandblock)
+                        {
+                            connectedTile.Item = ItemDatabase.Items.Where(item => !item.isSandblock).ElementAt(Random.Range(0, ItemDatabase.Items.Length - 1));
+                            inflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.one, TweenDuration));
+                        }
+                    }
+                    else
+                    {
+                        connectedTile.Item = ItemDatabase.Items.ElementAt(Random.Range(0, ItemDatabase.Items.Length));
+                        inflateSequence.Join(connectedTile.icon.transform.DOScale(Vector3.one, TweenDuration));
+                    }
                 }
 
                 await inflateSequence.Play().AsyncWaitForCompletion();
