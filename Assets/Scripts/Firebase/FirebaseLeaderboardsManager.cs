@@ -1,5 +1,6 @@
 using Firebase.Database;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
@@ -11,7 +12,7 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
     public static FirebaseLeaderboardsManager Instance;
     private DatabaseReference databaseReference;
 
-    public Transform LeaderBoardsContent;
+    public List<Transform> LeaderBoardsContent;
     public GameObject LeaderBoardsElementObjectPrefab;
 
     public int MaxDataLoadCount;
@@ -56,87 +57,88 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
 
     private IEnumerator LoadScoreboardDataAsync()
     {
-        Task<DataSnapshot> databaseTask = databaseReference.Child("Users").OrderByChild("HighScore").GetValueAsync();
+        string currentUserName = FirebaseRealtimeDataSaver.Instance.dataToSave.UserName;
+        PlayerNameText.text = currentUserName;
 
-        yield return new WaitUntil(predicate: () => databaseTask.IsCompleted);
-
-        if(databaseTask.Exception != null)
+        for (int i = 0; i < LeaderBoardsContent.Count; i++)
         {
-            Debug.LogWarning("herryk");
-        }
-        else
-        {
-            DataSnapshot snapshot = databaseTask.Result;
+            Task<DataSnapshot> databaseTask = databaseReference.Child("Users").OrderByChild($"HighScore + {i + 1}").GetValueAsync();
 
-            if(LeaderBoardsContent.childCount > 0)
+            yield return new WaitUntil(predicate: () => databaseTask.IsCompleted);
+
+            if (databaseTask.Exception != null)
             {
-                foreach (Transform child in LeaderBoardsContent.transform)
-                {
-                    Destroy(child.gameObject);
-                }
+                Debug.LogWarning("LoadScoreboardDataAsync");
             }
-
-            int currentDataLoadCount = 0;
-            bool isCurrentUserInTop = false;
-            string currentUserName = FirebaseRealtimeDataSaver.Instance.dataToSave.UserName;
-
-            PlayerNameText.text = currentUserName;
-
-
-            foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
+            else
             {
-                if (currentDataLoadCount < MaxDataLoadCount)
+                DataSnapshot snapshot = databaseTask.Result;
+
+                if (LeaderBoardsContent[i].childCount > 0)
                 {
-                    string userName = childSnapshot.Child("UserName").Value.ToString();
-                    string level = childSnapshot.Child("CurrentLevel").Value.ToString();
-                    string highScore = childSnapshot.Child("HighScore").Value.ToString();
-                    string userPlace = (currentDataLoadCount + 1).ToString();
-
-                    GameObject GO = InstantiateLeaderBoardsElement(userName, highScore, level, userPlace);
-
-                    currentDataLoadCount++;
-
-                    if(currentUserName == userName)
-                    { 
-                        isCurrentUserInTop = true;
-                        GO.GetComponent<Image>().color = Color.yellow;
+                    foreach (Transform child in LeaderBoardsContent[i].transform)
+                    {
+                        Destroy(child.gameObject);
                     }
                 }
-            }
 
-            if (!isCurrentUserInTop)
-            {
-                int currentUserPlace = 0;
-                bool isCurrentUserFound = false;
+                int currentDataLoadCount = 0;
+                bool isCurrentUserInTop = false;
 
                 foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
                 {
-                    if (!isCurrentUserFound)
+                    if (currentDataLoadCount < MaxDataLoadCount)
                     {
                         string userName = childSnapshot.Child("UserName").Value.ToString();
-                        currentUserPlace++;
+                        string level = childSnapshot.Child("CurrentLevel").Value.ToString();
+                        string highScore = childSnapshot.Child("HighScore" + $"{i + 1}").Value.ToString();
+                        string userPlace = (currentDataLoadCount + 1).ToString();
 
-                        if (currentUserName == userName) { isCurrentUserFound = true; }
+                        GameObject GO = InstantiateLeaderBoardsElement(userName, highScore, level, userPlace, LeaderBoardsContent[i]);
+
+                        currentDataLoadCount++;
+
+                        if (currentUserName == userName)
+                        {
+                            isCurrentUserInTop = true;
+                            GO.GetComponent<Image>().color = Color.yellow;
+                        }
                     }
                 }
 
-                string userHighScore = FirebaseRealtimeDataSaver.Instance.dataToSave.HighScore.ToString();
-                string userLevel = FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel.ToString();
-                string userPlace = currentUserPlace.ToString();
+                if (!isCurrentUserInTop)
+                {
+                    int currentUserPlace = 0;
+                    bool isCurrentUserFound = false;
 
-                GameObject GO = InstantiateLeaderBoardsElement(currentUserName, userHighScore, userLevel, userPlace);
-                GO.GetComponent<Image>().color = Color.yellow;
+                    foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
+                    {
+                        if (!isCurrentUserFound)
+                        {
+                            string userName = childSnapshot.Child("UserName").Value.ToString();
+                            currentUserPlace++;
 
+                            if (currentUserName == userName)
+                            {
+                                isCurrentUserFound = true;
+
+                                string highScore = childSnapshot.Child("HighScore" + $"{i + 1}").Value.ToString();
+                                string userLevel = FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel.ToString();
+                                string userPlace = currentUserPlace.ToString();
+
+                                GameObject GO = InstantiateLeaderBoardsElement(currentUserName, highScore, userLevel, userPlace, LeaderBoardsContent[i]);
+                                GO.GetComponent<Image>().color = Color.yellow;
+                            }
+                        }
+                    }
+                }
             }
         }
-
-
-
     }
 
-    public GameObject InstantiateLeaderBoardsElement(string userName, string userHighScore, string userLevel, string userPlace )
+    public GameObject InstantiateLeaderBoardsElement(string userName, string userHighScore, string userLevel, string userPlace, Transform content )
     {
-        GameObject leaderBoardsElementGO = Instantiate(LeaderBoardsElementObjectPrefab, LeaderBoardsContent);
+        GameObject leaderBoardsElementGO = Instantiate(LeaderBoardsElementObjectPrefab, content);
         LeaderBoardsElement leaderBoardsElement = leaderBoardsElementGO.GetComponent<LeaderBoardsElement>();
         leaderBoardsElement.NameText.text = userName;
         leaderBoardsElement.HighScoreText.text = userHighScore;
@@ -144,5 +146,14 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
         leaderBoardsElement.PlaceText.text = "#" + userPlace;
 
         return leaderBoardsElementGO;
+    }
+
+    public void OpenLevelLeaderboards(int level)
+    {
+        for (int i = 0; i < LeaderBoardsContent.Count; i++)
+        {
+            LeaderBoardsContent[i].gameObject.SetActive(false);
+            LeaderBoardsContent[level - 1].gameObject.SetActive(true);
+        }
     }
 }

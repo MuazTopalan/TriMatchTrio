@@ -31,7 +31,14 @@ public class MenuUIManager : MonoBehaviour
 
     public void OnStartButtonClicked()
     {
-        SceneManager.LoadScene("Level1"); 
+        if (FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel == 0)
+        {
+            SceneManager.LoadScene("Level1");
+        }
+        else
+        {
+            SceneManager.LoadScene("Level" + $"{FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel}");
+        }
     }
 
     public void OnLeaderBoardButtonClicked()
@@ -49,7 +56,6 @@ public class MenuUIManager : MonoBehaviour
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
         SceneManager.LoadScene(nextSceneIndex);
 
-        FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel = FirebaseRealtimeDataSaver.Instance.GetLevelNumberFromCurrentSceneName() + 1;
         FirebaseRealtimeDataSaver.Instance.SaveData();
     }
 

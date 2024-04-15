@@ -9,7 +9,11 @@ public class DataToSave
 {
     public string UserName;
     public int CurrentLevel;
-    public int HighScore;
+    public int HighScore1;
+    public int HighScore2;
+    public int HighScore3;
+    public int HighScore4;
+    public int HighScore5;
 }
 
 public class FirebaseRealtimeDataSaver : MonoBehaviour
@@ -31,6 +35,48 @@ public class FirebaseRealtimeDataSaver : MonoBehaviour
 
     public void SaveData()
     {
+        dataToSave.CurrentLevel = GetLevelNumberFromCurrentSceneName() + 1;
+
+        int score = ScoreCounter.Instance.Score;
+
+        switch (GetLevelNumberFromCurrentSceneName())
+        {
+            case 1:
+                if (score > dataToSave.HighScore1)
+                {
+                    dataToSave.HighScore1 = score;
+                }
+            break;
+
+            case 2:
+                if (score > dataToSave.HighScore2)
+                {
+                    dataToSave.HighScore2 = score;
+                }
+            break;
+
+            case 3:
+                if (score > dataToSave.HighScore3)
+                {
+                    dataToSave.HighScore3 = score;
+                }
+            break;
+
+            case 4:
+                if (score > dataToSave.HighScore4)
+                {
+                    dataToSave.HighScore4 = score;
+                }
+            break;
+
+            case 5:
+                if (score > dataToSave.HighScore5)
+                {
+                    dataToSave.HighScore5 = score;
+                }
+            break;
+        }
+
         string json = JsonUtility.ToJson(dataToSave);
         databaseReference.Child("Users").Child(UserID).SetRawJsonValueAsync(json);
     }
