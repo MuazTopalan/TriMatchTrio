@@ -44,13 +44,10 @@ public class SoundManager : MonoBehaviour
         if (btnSfxSource == null)
         {
             btnSfxSource = gameObject.AddComponent<AudioSource>();
-            //btnSfxSource.clip = btnSfxClip;
-            //btnSfxSource.Play();
-
         }
     }
 
-    public void PlayLevelBGM()
+    private void PlayLevelBGM()
     {
         if (SceneManager.GetActiveScene().name == "MenuScene")
         {

@@ -99,10 +99,6 @@ public class FirebaseRealtimeDataSaver : MonoBehaviour
             dataToSave = JsonUtility.FromJson<DataToSave>(jsonData);
             isDataLoaded = true;
         }
-        else
-        {
-
-        }
     }
 
     public int GetLevelNumberFromCurrentSceneName()

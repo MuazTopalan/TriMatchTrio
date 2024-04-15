@@ -64,5 +64,4 @@ public class FirebaseAnalyticsManager : MonoBehaviour
 
         FirebaseAnalytics.LogEvent("level_skipped", parameters);
     }
-
 }

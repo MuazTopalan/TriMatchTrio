@@ -18,30 +18,24 @@ public class FirebaseAuthManager : MonoBehaviour
 
     [Space]
     [Header("Login")]
-    public TMP_InputField EmailLoginInputField;
-    public TMP_InputField PasswordLoginInputField;
-    public Button LoginButton;
-    public Button LogoutButton;
+    [SerializeField] private TMP_InputField EmailLoginInputField;
+    [SerializeField] private TMP_InputField PasswordLoginInputField;
+    [SerializeField] private Button LoginButton;
+    [SerializeField] private Button LogoutButton;
 
     [Space]
     [Header("Register")]
-    public TMP_InputField NameRegisterInputField;
-    public TMP_InputField EmailRegisterInputField;
-    public TMP_InputField PasswordRegisterInputField;
-    public TMP_InputField ConfirmPasswordRegisterInputField;
-    public Button RegisterButton;
-
-    [Space]
-    [Header("CurrentUserCredentials")]
-    private string currentUserName;
+    [SerializeField] private TMP_InputField NameRegisterInputField;
+    [SerializeField] private TMP_InputField EmailRegisterInputField;
+    [SerializeField] private TMP_InputField PasswordRegisterInputField;
+    [SerializeField] private TMP_InputField ConfirmPasswordRegisterInputField;
+    [SerializeField] private Button RegisterButton;
 
     private void Awake()
     {
         Instance = this;
         DontDestroyOnLoad(this);
     }
-
-    
 
     private void Start()
     {
@@ -71,7 +65,7 @@ public class FirebaseAuthManager : MonoBehaviour
     private void OnEnable()
     {
         LoginButton.onClick.AddListener(Login);
-        LogoutButton.onClick.AddListener(LogOut);
+        if (LogoutButton != null) { LoginButton.onClick.AddListener(LogOut); }
         RegisterButton.onClick.AddListener(Register);
     }
 
@@ -102,7 +96,7 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         else
         {
-            UIManager.Instance.OpenMainPanel();
+            UIManager.Instance.OpenLoginPanel();
         }
     }
 
@@ -133,17 +127,11 @@ public class FirebaseAuthManager : MonoBehaviour
 
             if(!signedIn && User != null)
             {
-                Debug.Log("signedout");
                 UIManager.Instance.OpenLoginPanel();
                 ClearLoginInputFields();
             }
 
             User = Auth.CurrentUser;
-
-            if(signedIn)
-            {
-                Debug.Log("signedin");
-            }
         }
     }
 
@@ -163,10 +151,8 @@ public class FirebaseAuthManager : MonoBehaviour
         if (Auth != null && User != null)
         {
             Auth.SignOut();
-            Debug.Log("LoggedOut");
         }
     }
-
 
     private IEnumerator LoginAsync(string email, string password)
     {
@@ -208,7 +194,6 @@ public class FirebaseAuthManager : MonoBehaviour
         {
             User = loginTask.Result.User;
 
-            Debug.LogFormat("{0} You Are Successfully Logged In", User.DisplayName);
             FirebaseRealtimeDataSaver.Instance.UserID = User.UserId;
 
             if (User.IsEmailVerified)
@@ -219,13 +204,10 @@ public class FirebaseAuthManager : MonoBehaviour
             else
             {
                 SendEmailForVerification();
-
             }
         }
 
         FirebaseRealtimeDataSaver.Instance.dataToSave.UserName = User.DisplayName;
-        //FirebaseRealtimeDataSaver.Instance.SaveData();
-
     }
 
     public void Register()
@@ -281,12 +263,9 @@ public class FirebaseAuthManager : MonoBehaviour
                         failedMessage = "Registration Failed";
                         break;
                 }
-
-                Debug.Log(failedMessage);
             }
             else
             {
-                
                 User = registerTask.Result.User;
 
                 UserProfile userProfile = new UserProfile { DisplayName = name };
@@ -297,14 +276,12 @@ public class FirebaseAuthManager : MonoBehaviour
 
                 if (updateProfileTask.Exception != null)
                 {
-                    
                     User.DeleteAsync();
 
                     Debug.LogError(updateProfileTask.Exception);
 
                     FirebaseException firebaseException = updateProfileTask.Exception.GetBaseException() as FirebaseException;
                     AuthError authError = (AuthError)firebaseException.ErrorCode;
-
 
                     string failedMessage = "Profile update Failed! Becuase ";
                     switch (authError)
@@ -330,8 +307,6 @@ public class FirebaseAuthManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Registration Sucessful Welcome " + User.DisplayName);
-
                     if (User.IsEmailVerified)
                     {
                         UIManager.Instance.OpenLoginPanel();
@@ -339,13 +314,11 @@ public class FirebaseAuthManager : MonoBehaviour
                     else
                     {
                         SendEmailForVerification();
-
                     }
                 }
             }
         }
     }
-
 
     public void SendEmailForVerification()
     {
@@ -383,11 +356,6 @@ public class FirebaseAuthManager : MonoBehaviour
 
                 Debug.Log(errorMessage);
             }
-            else
-            {
-                Debug.Log("email sent");
-            }
-
         }
     }
 }

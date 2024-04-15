@@ -12,14 +12,12 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
     public static FirebaseLeaderboardsManager Instance;
     private DatabaseReference databaseReference;
 
-    public List<Transform> LeaderBoardsContent;
-    public GameObject LeaderBoardsElementObjectPrefab;
+    [SerializeField] private List<Transform> LeaderBoardsContent;
+    [SerializeField] private GameObject LeaderBoardsElementObjectPrefab;
 
-    public int MaxDataLoadCount;
+    [SerializeField] private int MaxDataLoadCount;
 
-    public Button RefreshButton;
-
-    public TextMeshProUGUI PlayerNameText;
+    [SerializeField] private TextMeshProUGUI PlayerNameText;
 
     private void Awake()
     {
@@ -38,16 +36,6 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
     private void Start()
     {
         LoadScoreboardData();
-    }
-
-    private void OnEnable()
-    {
-        RefreshButton.onClick.AddListener(LoadScoreboardData);
-    }
-
-    private void OnDisable()
-    {
-        RefreshButton.onClick.RemoveListener(LoadScoreboardData);
     }
 
     public void LoadScoreboardData()
