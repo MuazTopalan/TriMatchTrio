@@ -62,7 +62,7 @@ public class FirebaseLeaderboardsManager : MonoBehaviour
 
         for (int i = 0; i < LeaderBoardsContent.Count; i++)
         {
-            Task<DataSnapshot> databaseTask = databaseReference.Child("Users").OrderByChild($"HighScore + {i + 1}").GetValueAsync();
+            Task<DataSnapshot> databaseTask = databaseReference.Child("Users").OrderByChild("HighScore" + $"{i + 1}").GetValueAsync();
 
             yield return new WaitUntil(predicate: () => databaseTask.IsCompleted);
 
