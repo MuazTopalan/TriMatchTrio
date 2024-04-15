@@ -22,15 +22,37 @@ public class MenuUIManager : MonoBehaviour
 
     public TextMeshProUGUI PlayerNameText;
 
-    private void Start()
+    void Start()
     {
         _soundManager = SoundManager.Instance;
 
         PlayerNameText.text = FirebaseAuthManager.Instance.User.DisplayName;
+
+        GameObject buttonPanel = GameObject.Find("ButtonPanel");
+
+        if (buttonPanel != null)
+        {
+            Button[] buttons = buttonPanel.GetComponentsInChildren<Button>();
+
+            foreach (Button button in buttons)
+            {
+                if (button.name != "SoundBtn" && button.name != "ExitBtn")
+                {
+                    button.onClick.AddListener(() => OnButtonClicked());
+                }
+            }
+        }
+    }
+
+    public void OnButtonClicked()
+    {
+        _soundManager.PlayBtnSfx();
     }
 
     public void OnStartButtonClicked()
     {
+
+
         if (FirebaseRealtimeDataSaver.Instance.dataToSave.CurrentLevel == 0)
         {
             SceneManager.LoadScene("Level1");
@@ -67,7 +89,6 @@ public class MenuUIManager : MonoBehaviour
             nextSceneIndex = 1;
         }
         SceneManager.LoadScene("Level" + $"{nextSceneIndex}");
-
         FirebaseRealtimeDataSaver.Instance.SaveData();
     }
 

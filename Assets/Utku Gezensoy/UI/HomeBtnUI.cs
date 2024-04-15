@@ -10,5 +10,6 @@ public class HomeBtnUI : MonoBehaviour
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(2);
+        SoundManager.Instance.PlayBtnSfx();
     }
 }
