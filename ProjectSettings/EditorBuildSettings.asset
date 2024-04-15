@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/LogInRegisterSceneYusuf.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
+    path: Assets/Scenes/New Scene.unity
+    guid: b0fc86d3ca8c36446979c4757f46f464
+  - enabled: 0
     path: Assets/Scenes/GameSceneYusuf.unity
     guid: e81c4ae7c0d8e7c47a3afe182cbe5609
   - enabled: 1

@@ -44,10 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2240f4cc36beebc42967d4b11288d5c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SoundOnSprite: {fileID: 0}
-  SoundOffSprite: {fileID: 0}
+  SoundOnSprite: {fileID: -213356348, guid: 156ec492e516ccb4099add479601d65e, type: 3}
+  SoundOffSprite: {fileID: 1897002124, guid: 156ec492e516ccb4099add479601d65e, type: 3}
   SoundButtonImage: {fileID: 0}
   DevPanelOpenSprite: {fileID: 0}
   DevPanelCloseSprite: {fileID: 0}
   DevButtonImage: {fileID: 0}
   DevPanel: {fileID: 0}
+  PlayerNameText: {fileID: 0}
