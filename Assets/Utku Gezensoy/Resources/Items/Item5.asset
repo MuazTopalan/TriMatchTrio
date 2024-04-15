@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: Item5
   m_EditorClassIdentifier: 
   value: 15
-  sprite: {fileID: 21300000, guid: 106f43f0b887194469f28f5b6b7bb22b, type: 3}
+  sprite: {fileID: 21300000, guid: b5e03ebfbf49abe4396c09fa55cf4017, type: 3}
+  isSandblock: 0
+  levelRequirement: 1
