@@ -77,9 +77,9 @@ public class FirebaseAuthManager : MonoBehaviour
 
     private void OnDisable()
     {
-        LoginButton.onClick.RemoveListener(Login);
-        LoginButton.onClick.RemoveListener(LogOut);
-        RegisterButton.onClick.RemoveListener(Register);
+        if (LoginButton != null) { LoginButton.onClick.RemoveListener(Login); }
+        if (LogoutButton != null) { LoginButton.onClick.RemoveListener(LogOut); }
+        if (RegisterButton != null) { LoginButton.onClick.RemoveListener(Register); }
     }
 
     private void IntiliazeFirebase()

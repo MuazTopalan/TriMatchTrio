@@ -6655,7 +6655,11 @@ MonoBehaviour:
   dataToSave:
     UserName: 
     CurrentLevel: 0
-    HighScore: 0
+    HighScore1: 0
+    HighScore2: 0
+    HighScore3: 0
+    HighScore4: 0
+    HighScore5: 0
   UserID: 
   isDataLoaded: 0
 --- !u!4 &899985847
