@@ -38,7 +38,7 @@ public class Board : MonoBehaviour
     private bool isGameRunning = true;
 
     // Score threshold for the level
-    [SerializeField] private int scoreThreshold;
+    public int scoreThreshold;
 
     // Reference to the TextMeshPro object for displaying the timer
     [SerializeField] private TextMeshProUGUI timerText;
