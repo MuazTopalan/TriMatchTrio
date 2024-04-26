@@ -5535,11 +5535,12 @@ MonoBehaviour:
   - {fileID: 2099820028}
   - {fileID: 1069297916}
   - {fileID: 902558653}
-  levelTimer: 30
-  scoreThreshold: 500
+  levelTimer: 90
+  scoreThreshold: 800
   timerText: {fileID: 1604374281}
   winPanel: {fileID: 1951569665}
   losePanel: {fileID: 1164567672}
+  PopCount: 0
 --- !u!114 &1466752954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6148,7 +6149,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

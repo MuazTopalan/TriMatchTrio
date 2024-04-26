@@ -7,6 +7,7 @@ public class ScoreCounter : MonoBehaviour
 {
     public static ScoreCounter Instance { get; private set; }
     private int _score;
+    private int _scoreThreshold;
 
     public int Score
     {
@@ -18,11 +19,16 @@ public class ScoreCounter : MonoBehaviour
 
             _score = value;
 
-            scoreText.SetText($"Score = {_score}");
+            scoreText.SetText($"Score = {_score} / {_scoreThreshold}");
         }
     }
     
     [SerializeField] private TextMeshProUGUI scoreText;
 
     private void Awake() => Instance = this;
+
+    private void Start()
+    {
+        _scoreThreshold = Board.Instance.scoreThreshold;
+    }
 }
